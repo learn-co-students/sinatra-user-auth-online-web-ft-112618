@@ -3,40 +3,51 @@ class ApplicationController < Sinatra::Base
   set :views, Proc.new { File.join(root, "../views/") }
 
   configure do
-    enable :sessions
-    set :session_secret, "secret"
-  end
+   enable :sessions
+   set :session_secret, "secret"
+ end
 
-  get '/' do
-    erb :home
-  end
+ get '/' do
+   erb :home
+ end
 
-  get '/registrations/signup' do
-    erb :'/registrations/signup'
-  end
+ get '/registrations/signup' do
 
-  post '/registrations' do
+   erb :'/registrations/signup'
+ end
 
-    redirect '/users/home'
-  end
+ post '/registrations' do
+   @user = User.find_by(email: params[:email])
+   session[:user_id] = @user.id
 
-  get '/sessions/login' do
-    erb :'sessions/login'
-  end
+   redirect '/users/home'
+ end
 
-  post '/sessions' do
+ get '/sessions/login' do
 
-    redirect '/users/home'
-  end
+   # the line of code below render the view page in app/views/sessions/login.erb
+   erb :'sessions/login'
+ end
 
-  get '/sessions/logout' do 
+ post '/sessions' do
+   @user = User.find_by(email: params[:email], password: params[:password])
+   if @user
+     session[:user_id] = @user.id
+     redirect '/users/home'
+   end
+   redirect '/sessions/login'
+ end
 
-    redirect '/'
-  end
+ get '/sessions/logout' do
+   redirect '/'
+ end
 
-  get '/users/home' do
+ get '/users/home' do
 
-    erb :'/users/home'
-  end
+   @user = User.find(session[:user_id])
+   erb :'/users/home'
+ end
+
+
 
 end
