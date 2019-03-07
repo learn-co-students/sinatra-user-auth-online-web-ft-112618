@@ -1,3 +1,5 @@
+SINATRA_ACTIVESUPPORT_WARNING=false
+
 require 'bundler/setup'
 Bundler.require
 
